@@ -1,0 +1,11 @@
+__pycache__/
+*.pyc
+
+# Wygenerowane widgety zawierają ścieżki konkretnej maszyny — źródłem jest
+# make_widget.py. Każdy generuje własne.
+widgets/*.jsx
+!widgets/.gitkeep
+
+# Token API / cache — nigdy do repo (i tak trzymane w ~/.config).
+token
+.config/
