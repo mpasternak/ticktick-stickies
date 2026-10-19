@@ -6,7 +6,9 @@ import make_widget as mw
 
 
 def _ns(**kw):
-    base = dict(label="Na dziś", view="today", limit=None, top=40, left=40, accent="#3f7ae0", theme="grafit")
+    base = dict(
+        label="Na dziś", view="today", limit=None, top=40, left=40, accent="#3f7ae0", theme="grafit", height=None
+    )
     base.update(kw)
     return Namespace(**base)
 
@@ -27,7 +29,7 @@ def test_slug_strips_polish_diacritics():
 
 def test_build_widget_substitutes_all_placeholders():
     src = mw.build_widget(_ns(label="Na dziś", accent="#abc123", top=11, left=22))
-    for ph in ("__LABEL__", "__SLUG__", "__COMMAND__", "__TOP__", "__LEFT__", "__ACCENT__", "__THEME__"):
+    for ph in ("__LABEL__", "__SLUG__", "__COMMAND__", "__TOP__", "__LEFT__", "__ACCENT__", "__THEME__", "__HEIGHT__"):
         assert ph not in src, f"nie podstawiono {ph}"
     assert "Karteczka TickTick: Na dziś" in src
     assert "4px solid #abc123" in src
@@ -50,3 +52,8 @@ def test_build_widget_has_same_controls_as_freshdesk_notes():
     assert "hidden" in src and "📌" in src  # ukrycie -> pinezka
     assert "ns-resize" in src and "startResize" in src  # zmiana wysokości od dołu
     assert "renderTasks" in src
+
+
+def test_start_height():
+    assert "const DEFAULT_HEIGHT = null;" in mw.build_widget(_ns())
+    assert "const DEFAULT_HEIGHT = 420;" in mw.build_widget(_ns(height=420))

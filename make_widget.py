@@ -9,7 +9,8 @@ Każda karteczka ma w nagłówku przyciski:
     ⟳  odśwież teraz (uruchamia komendę na żądanie przez `run` z Übersicht),
     ▾/▸ zwiń do nagłówka / rozwiń,
     ✕  ukryj — zostaje tylko pinezka „📌 NAZWA"; klik w nią przywraca.
-Dolną krawędź listy można chwycić i zmienić wysokość (dwuklik = auto).
+Dolną krawędź listy można chwycić i zmienić wysokość (dwuklik = auto);
+--height ustawia wysokość startową, zanim zmienisz ją myszą.
 Stan (kolor / zwinięcie / ukrycie / wysokość) oraz pozycja są zapamiętane w
 localStorage — przeżywają odświeżenie i restart.
 
@@ -52,6 +53,7 @@ const POS_KEY = "ttpos-__SLUG__"; // pozycja (przeciąganie) — jak dotychczas
 const UI_KEY = "ttui-__SLUG__";   // zwinięcie / ukrycie / wysokość listy
 const LAST_KEY = "ttlast-__SLUG__"; // ostatnie udane dane — pokazywane, gdy nie ma sieci
 const DEFAULT_POS = { x: __LEFT__, y: __TOP__ };
+const DEFAULT_HEIGHT = __HEIGHT__; // startowa wysokość listy (null = auto), aż do zmiany myszą
 const MIN_BODY = 48;              // minimalna wysokość listy przy zmianie rozmiaru
 
 // --- trwały stan UI (localStorage) -----------------------------------------
@@ -154,7 +156,8 @@ export const initialState = {
   last: loadLast(),
   collapsed: !!_ui.collapsed,
   hidden: !!_ui.hidden,
-  height: typeof _ui.height === "number" ? _ui.height : null,
+  // "height" w zapisie (też null po dwukliku = auto) wygrywa z wartością startową
+  height: "height" in _ui ? _ui.height : DEFAULT_HEIGHT,
   theme: resolveTheme(_ui.theme) || DEFAULT_THEME,
 };
 
@@ -465,6 +468,7 @@ def build_widget(a) -> str:
         .replace("__LEFT__", str(a.left))
         .replace("__ACCENT__", a.accent)
         .replace("__THEME__", a.theme)
+        .replace("__HEIGHT__", str(a.height) if a.height else "null")
     )
 
 
@@ -475,6 +479,9 @@ def main() -> None:
     ap.add_argument("--limit", type=int, default=None, help="przytnij listę do N")
     ap.add_argument("--top", type=int, default=40)
     ap.add_argument("--left", type=int, default=40)
+    ap.add_argument(
+        "--height", type=int, default=None, help="startowa wysokość listy w px (ze scrollem); domyślnie auto"
+    )
     ap.add_argument("--accent", default="#3f7ae0")
     ap.add_argument(
         "--theme",

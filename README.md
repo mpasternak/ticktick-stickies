@@ -119,6 +119,8 @@ colour, collapse, hide and height are all remembered in localStorage. Clicking a
 task opens it in the TickTick web app. Offline, the note keeps showing the last
 data it got (marked 📴).
 
+`--height PX` gives a note a fixed starting list height (the list scrolls) — handy for
+long lists; dragging the bottom edge overrides it, double-click returns to auto.
 `--limit N` trims a long list; the note then ends with "…i jeszcze N w TickTicku"
 and the header count still shows the total.
 

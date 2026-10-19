@@ -258,8 +258,9 @@ def fetch(view: str, today: date) -> tuple[list[dict], bool]:
 
 
 def _sort_key(r: dict) -> tuple:
-    # w sekcji: wyższy priorytet wyżej, potem wcześniejszy termin, potem kolejność z TickTicka
-    return (r["tier"], -r["priority"], r["sort_day"] or "9999", r["sort_order"])
+    # w sekcji: wyższy priorytet wyżej, potem wcześniejszy termin (w dniu: z godziną przed
+    # całodniowymi, chronologicznie), potem kolejność z TickTicka
+    return (r["tier"], -r["priority"], r["sort_day"] or "9999", r["sort_at"] or "~", r["sort_order"])
 
 
 def build_rows(view: str, raw: list[dict], names: dict[str, str], now: datetime) -> list[dict]:

@@ -127,3 +127,8 @@ def test_quadrants_broken_file_is_loud(tmp_path, monkeypatch):
     (tmp_path / "quadrants.json").write_text("{nope", encoding="utf-8")
     with pytest.raises(SystemExit):
         tt.quadrants()
+
+
+def test_quadrant_same_day_timed_before_allday():
+    raw = [_allday("2026-10-18", id="allday"), {"id": "t08", "title": "x", "dueDate": "2026-10-18T06:00:00+0000"}]
+    assert [r["id"] for r in tt.build_rows("q1", raw, NAMES, NOW)] == ["t08", "allday"]
